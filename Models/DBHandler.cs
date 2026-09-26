@@ -264,7 +264,6 @@ namespace TheatreMgnt.Models
 
             return i >= 1;
         }
-
         public List<Booking> GetBookingsByCategory(int? catId)
         {
             Connection();

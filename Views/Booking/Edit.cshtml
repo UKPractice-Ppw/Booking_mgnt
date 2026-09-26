@@ -12,88 +12,115 @@
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal">
-    <h4>Booking</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.Booking_id, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Booking_id, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Booking_id, "", new { @class = "text-danger" })
+    <div class="form-horizontal">
+        <h4>Booking</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Booking_id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Booking_id, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Booking_id, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    @*<div class="form-group">
-        @Html.LabelFor(model => model.User_id, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(model => model.User_id, new { @class = "form-control", @readonly = "readonly" })
-        </div>
-    </div>*@
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.User_id, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.User_id, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>*@
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Cat_id, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @*@Html.EditorFor(model => model.Cat_id, new { htmlAttributes = new { @class = "form-control" } })*@
-            @Html.ValidationMessageFor(model => model.Cat_id, "", new { @class = "text-danger" })
-            @Html.DropDownListFor(model => model.Cat_id, Model.Categories, "-- Select Category --", new { @class = "form-control", id = "Category_id" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Cat_id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Cat_id, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.ValidationMessageFor(model => model.Cat_id, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(model => model.Cat_id, Model.Categories, "-- Select Category --", new { @class = "form-control", id = "Category_id" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Movie_id, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DropDownListFor(model => model.Movie_id, Model.Movies, "-- Select Movie --", new { @class = "form-control", id = "Movie_ID" })
-            @*@Html.EditorFor(model => model.Movie_ID, new { htmlAttributes = new { @class = "form-control" } })*@
-            @Html.ValidationMessageFor(model => model.Movie_id, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Movie_id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Movie_id, Model.Movies, "-- Select Movie --", new { @class = "form-control", id = "Movie_ID" })
+                @*@Html.EditorFor(model => model.Movie_ID, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.ValidationMessageFor(model => model.Movie_id, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-md-2">Rate (per ticket)</label>
-        <div class="col-md-10">
-            <input type="text" id="txtRate" class="form-control" readonly="readonly" value="0" />
+        <div class="form-group">
+            <label class="control-label col-md-2">Rate (per ticket)</label>
+            <div class="col-md-10">
+                <input type="text" id="txtRate" class="form-control" readonly="readonly" value="0" />
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.No_of_tickets, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.No_of_tickets, new { htmlAttributes = new { @class = "form-control", id = "txtTickets", required = "required" } })
-            @Html.ValidationMessageFor(model => model.No_of_tickets, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.No_of_tickets, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.No_of_tickets, new { htmlAttributes = new { @class = "form-control", id = "txtTickets", required = "required" } })
+                @Html.ValidationMessageFor(model => model.No_of_tickets, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", id = "txtAmount", @readonly = "readonly" } })
-            @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", id = "txtAmount", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
         </div>
     </div>
-</div>
 }
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">
         $(document).ready(function () {
-            // 1. Load Movies dynamically on Category Change
+
+            // Helper function to update Rate and Total
+            function updateRateAndTotal() {
+                var selectedOption = $("#Movie_ID").find('option:selected');
+                var rate = parseFloat(selectedOption.attr('data-rate')) || 0;
+
+                // If data-rate attribute isn't set on page load, fetch it via AJAX or initial value
+                if (rate === 0 && $("#Movie_ID").val()) {
+                    var movieId = $("#Movie_ID").val();
+                    $.ajax({
+                        url: '@Url.Action("GetMoviesByCategory", "Booking")',
+                        type: 'GET',
+                        data: { catId: $("#Category_id").val() },
+                        success: function (data) {
+                            $.each(data, function (i, movie) {
+                                if (movie.Value == movieId) {
+                                    $("#txtRate").val(movie.Rate);
+                                    calculateTotal();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    $("#txtRate").val(rate);
+                    calculateTotal();
+                }
+            }
+
+            // 1. Category Change Handler
             $("#Category_id").change(function () {
                 var cat_id = $(this).val();
 
-                // Clear downstream fields
                 $("#Movie_ID").empty().append('<option value="">-- Select Movie --</option>');
                 $("#txtRate").val(0);
                 $("#txtAmount").val(0);
-                if (cat_id !== "") {
+
+                if (cat_id && cat_id !== "") {
                     $.ajax({
                         url: '@Url.Action("GetMoviesByCategory", "Booking")',
                         type: 'GET',
@@ -115,15 +142,12 @@
                 }
             });
 
-            // 2. Extract Rate on Movie Selection change
+            // 2. Movie Change Handler
             $("#Movie_ID").change(function () {
-                var selectedOption = $(this).find('option:selected');
-                var rate = parseFloat(selectedOption.attr('data-rate')) || 0;
-                $("#txtRate").val(rate);
-                calculateTotal();
+                updateRateAndTotal();
             });
 
-            // 3. Recalculate Total on Ticket Input change
+            // 3. Ticket Quantity Change Handler
             $("#txtTickets").on('input change', function () {
                 calculateTotal();
             });
@@ -132,6 +156,34 @@
                 var rate = parseFloat($("#txtRate").val()) || 0;
                 var tickets = parseInt($("#txtTickets").val()) || 0;
                 $("#txtAmount").val(rate * tickets);
+            }
+
+            // --- CRITICAL FOR EDIT MODE ---
+            // Trigger rate fetch & initial total calculation immediately on page load
+            if ($("#Category_id").val()) {
+                // Re-bind dynamic options with data-rate attributes for existing selection
+                var initialCatId = $("#Category_id").val();
+                var selectedMovieId = '@Model.Movie_id';
+
+                $.ajax({
+                    url: '@Url.Action("GetMoviesByCategory", "Booking")',
+                    type: 'GET',
+                    data: { catId: initialCatId },
+                    success: function (data) {
+                        $("#Movie_ID").empty().append('<option value="">-- Select Movie --</option>');
+                        $.each(data, function (i, movie) {
+                            var isSelected = (movie.Value == selectedMovieId);
+                            $("#Movie_ID").append(
+                                $('<option></option>')
+                                    .val(movie.Value)
+                                    .html(movie.Text)
+                                    .attr('data-rate', movie.Rate)
+                                    .prop('selected', isSelected)
+                            );
+                        });
+                        updateRateAndTotal();
+                    }
+                });
             }
         });
     </script>

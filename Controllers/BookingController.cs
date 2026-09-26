@@ -50,6 +50,7 @@ namespace TheatreMgnt.Controllers
             }
             ViewBag.CatList = GetCategoryList();
             List<Booking> bookingList = db.GetBookings();
+            bookingList = db.GetBookingsByCategory(catId);
             return View(bookingList);
         }
 
@@ -112,7 +113,7 @@ namespace TheatreMgnt.Controllers
             bk.Categories = GetCategoryList();
 
             // Populate Movies dropdown filtered by the current Category
-            DataTable dt = db.ddlQuery("SELECT Movie_id, Movie_name FROM tbl_movie WHERE Cat_id = " + bk.Cat_id);
+            DataTable dt = db.ddlQuery("SELECT Movie_id, Movie_name,Movie_rate FROM tbl_movie WHERE Cat_id = " + bk.Cat_id);
             List<SelectListItem> movieList = new List<SelectListItem>();
             foreach (DataRow dr in dt.Rows)
             {
