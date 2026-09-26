@@ -218,53 +218,93 @@ namespace TheatreMgnt.Models
             }
         }
 
-        public DataTable GetMoviesByCat(int cat_id)
+        public Booking GetBookingByID(int id)
         {
             Connection();
-            List<Movie> movielist = new List<Movie>();
-            SqlCommand cmd = new SqlCommand("SELECT * FROM tbl_movie WHERE Cat_id=@Cat_id", con);
-            cmd.Parameters.AddWithValue("@Cat_id", cat_id);
-            SqlDataAdapter sda = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
+            Booking bk = null;
+            string query = "SELECT Booking_id, User_id, Cat_id, Movie_id, No_of_tickets, Amount FROM tbl_booking WHERE Booking_id = @Booking_id";
+
+            SqlCommand cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@Booking_id", id);
             con.Open();
-            sda.Fill(dt);
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            if (dr.Read())
+            {
+                bk = new Booking
+                {
+                    Booking_id = Convert.ToInt32(dr["Booking_id"]),
+                    User_id = Convert.ToInt32(dr["User_id"]),
+                    Cat_id = Convert.ToInt32(dr["Cat_id"]),
+                    Movie_id = Convert.ToInt32(dr["Movie_id"]),
+                    No_of_tickets = Convert.ToInt32(dr["No_of_tickets"]),
+                    Amount = Convert.ToInt32(dr["Amount"])
+                };
+            }
             con.Close();
-            //foreach (DataRow dr in dt.Rows)
-            //{
-            //    movielist.Add(
-            //        new Movie
-            //        {
-            //            Movie_id = Convert.ToInt32(dr["Movie_id"]),
-            //            Movie_name = dr["Movie_name"].ToString()
-            //        });
-            //}        
-            return dt;
+            return bk;
+        }
+        public bool UpdateBooking(Booking bk)
+        {
+            Connection();
+            string query = @"UPDATE tbl_booking 
+                    SET Cat_id = @Cat_id, Movie_id = @Movie_id, No_of_tickets = @No_of_tickets, Amount = @Amount 
+                    WHERE Booking_id = @Booking_id";
+
+            SqlCommand cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@Cat_id", bk.Cat_id);
+            cmd.Parameters.AddWithValue("@Movie_id", bk.Movie_id);
+            cmd.Parameters.AddWithValue("@No_of_tickets", bk.No_of_tickets);
+            cmd.Parameters.AddWithValue("@Amount", bk.Amount);
+            cmd.Parameters.AddWithValue("@Booking_id", bk.Booking_id);
+
+            con.Open();
+            int i = cmd.ExecuteNonQuery();
+            con.Close();
+
+            return i >= 1;
         }
 
-        //public List<Movie> GetMoviesByCategory(int categoryId)
-        //{
-        //    List<Movie> movies = new List<Movie>();
-        //    Connection();
-        //    SqlCommand cmd = new SqlCommand("GetMoviesByCategory", con);
-        //    cmd.CommandType = CommandType.StoredProcedure;
-        //    cmd.Parameters.AddWithValue("@Cat_id", categoryId);
-        //    con.Open();
-        //    SqlDataReader dr = cmd.ExecuteReader();
-        //    while (dr.Read())
-        //    {
-        //        Movie movie = new Movie
-        //        {
-        //            Movie_id = Convert.ToInt32(dr["Movie_id"]),
-        //            Movie_name = dr["Movie_name"].ToString(),
-        //            Release_date = Convert.ToDateTime(dr["Release_date"]),
-        //            Cat_id = Convert.ToInt32(dr["Cat_id"]),
-        //            Movie_rate = Convert.ToDecimal(dr["Movie_rate"])
-        //        };
-        //        movies.Add(movie);
-        //    }
-        //    con.Close();
-        //    return movies;
-        //}
+        public List<Booking> GetBookingsByCategory(int? catId)
+        {
+            Connection();
+            List<Booking> bookingList = new List<Booking>();
+
+            string query = @"SELECT b.Booking_id, b.User_id, b.Cat_id, b.Movie_id, 
+                            b.No_of_tickets, b.Amount, 
+                            c.Cat_type, m.Movie_name, m.Movie_rate 
+                     FROM tbl_booking b
+                     INNER JOIN tbl_movie_cat c ON b.Cat_id = c.Cat_id
+                     INNER JOIN tbl_movie m ON b.Movie_id = m.Movie_id";
+
+            // Append WHERE clause if a specific category is selected
+            if (catId.HasValue && catId.Value > 0)
+            {
+                query += " WHERE b.Cat_id = " + catId.Value;
+            }
+
+            SqlCommand cmd = new SqlCommand(query, con);
+            con.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                Booking bk = new Booking
+                {
+                    Booking_id = Convert.ToInt32(dr["Booking_id"]),
+                    User_id = Convert.ToInt32(dr["User_id"]),
+                    Cat_id = Convert.ToInt32(dr["Cat_id"]),
+                    Movie_id = Convert.ToInt32(dr["Movie_id"]),
+                    No_of_tickets = Convert.ToInt32(dr["No_of_tickets"]),
+                    Amount = Convert.ToInt32(dr["Amount"]),
+                    Cat_type = Convert.ToString(dr["Cat_type"]),
+                    Movie_name = Convert.ToString(dr["Movie_name"]),
+                    Movie_rate = Convert.ToInt32(dr["Movie_rate"])
+                };
+                bookingList.Add(bk);
+            }
+            con.Close();
+            return bookingList;
+        }
 
         public List<Booking> GetBookings()
         {
@@ -274,7 +314,7 @@ namespace TheatreMgnt.Models
             // SQL Join to get readable Names and Rate instead of raw IDs
             string query = @"SELECT b.Booking_ID, b.User_ID, b.Cat_ID, b.Movie_ID, 
                             b.No_of_tickets, b.Amount, 
-                            c.Cat_type, m.Movie_name, m.Rate 
+                            c.Cat_type, m.Movie_name, m.Movie_rate 
                      FROM tbl_booking b
                      INNER JOIN tbl_movie_cat c ON b.Cat_id = c.Cat_id
                      INNER JOIN tbl_movie m ON b.Movie_id = m.Movie_id";
@@ -286,16 +326,16 @@ namespace TheatreMgnt.Models
             {
                 Booking bk = new Booking
                 {
-                    Booking_id = Convert.ToInt32(dr["Booking_ID"]),
-                    User_id = Convert.ToInt32(dr["User_ID"]),
-                    Cat_id = Convert.ToInt32(dr["Cat_ID"]),
-                    Movie_id = Convert.ToInt32(dr["Movie_ID"]),
+                    Booking_id = Convert.ToInt32(dr["Booking_id"]),
+                    User_id = Convert.ToInt32(dr["User_id"]),
+                    Cat_id = Convert.ToInt32(dr["Cat_id"]),
+                    Movie_id = Convert.ToInt32(dr["Movie_id"]),
                     No_of_tickets = Convert.ToInt32(dr["No_of_tickets"]),
                     Amount = Convert.ToInt32(dr["Amount"]),
                     // Populating display values
-                    Cat_type = Convert.ToString(dr["Cat_Type"]),
+                    Cat_type = Convert.ToString(dr["Cat_type"]),
                     Movie_name = Convert.ToString(dr["Movie_name"]),
-                    Movie_rate = Convert.ToInt32(dr["Rate"])
+                    Movie_rate = Convert.ToInt32(dr["Movie_rate"])
                 };
                 bookingList.Add(bk);
             }

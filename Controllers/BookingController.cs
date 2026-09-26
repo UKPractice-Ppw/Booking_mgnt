@@ -33,7 +33,7 @@ namespace TheatreMgnt.Controllers
             {
                 list.Add(new
                 {
-                    Value = dr["Movie_ID"].ToString(),
+                    Value = dr["Movie_id"].ToString(),
                     Text = dr["Movie_name"].ToString(),
                     Rate = dr["Movie_rate"].ToString()
                 });
@@ -42,8 +42,12 @@ namespace TheatreMgnt.Controllers
         }
 
         // GET: Booking
-        public ActionResult Index()
+        public ActionResult Index(int? catId)
         {
+            if (Session["User_id"] == null)
+            {
+                return RedirectToAction("Create", "User");
+            }
             ViewBag.CatList = GetCategoryList();
             List<Booking> bookingList = db.GetBookings();
             return View(bookingList);
@@ -75,7 +79,7 @@ namespace TheatreMgnt.Controllers
         {
             try
             {
-                int uid = Session["uid"] != null ? Convert.ToInt32(Session["uid"]) : 1;
+                int uid = Session["User_id"] != null ? Convert.ToInt32(Session["User_id"]) : 1;
 
                 // Fetch accurate rate from DB and calculate total amount
                 int rate = db.get_rate(booking.Movie_id);
@@ -83,7 +87,7 @@ namespace TheatreMgnt.Controllers
 
                 if (db.addBooking(booking, uid, calculatedAmount))
                 {
-                    return RedirectToAction("Index", "Movie");
+                    return RedirectToAction("Index", "Booking");
                 }
             }
             catch
@@ -98,23 +102,54 @@ namespace TheatreMgnt.Controllers
         // GET: Booking/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            Booking bk = db.GetBookingByID(id);
+            if (bk == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Populate Category dropdown
+            bk.Categories = GetCategoryList();
+
+            // Populate Movies dropdown filtered by the current Category
+            DataTable dt = db.ddlQuery("SELECT Movie_id, Movie_name FROM tbl_movie WHERE Cat_id = " + bk.Cat_id);
+            List<SelectListItem> movieList = new List<SelectListItem>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                movieList.Add(new SelectListItem
+                {
+                    Value = dr["Movie_id"].ToString(),
+                    Text = dr["Movie_name"].ToString(),
+                    Selected = (Convert.ToInt32(dr["Movie_id"]) == bk.Movie_id)
+                });
+            }
+            bk.Movies = movieList;
+
+            return View(bk);
         }
 
         // POST: Booking/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, Booking bkmodel)
         {
             try
             {
-                // TODO: Add update logic here
+                int rate = db.get_rate(bkmodel.Movie_id);
+                bkmodel.Amount = rate * bkmodel.No_of_tickets;
+                bkmodel.Booking_id = id;
 
-                return RedirectToAction("Index");
+                if (db.UpdateBooking(bkmodel))
+                {
+                    return RedirectToAction("Index");
+                }
             }
             catch
             {
                 return View();
             }
+            bkmodel.Categories = GetCategoryList();
+            bkmodel.Movies = new List<SelectListItem>();
+            return View(bkmodel);
         }
 
         // GET: Booking/Delete/5
